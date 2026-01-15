@@ -1,7 +1,5 @@
 import Image from "next/image"
 import { BatLoader } from "@/components/bat-loader"
-import { ParticlesBackground } from "@/components/particles-background"
-import { GothamSkyline } from "@/components/gotham-skyline"
 import { MissionText } from "@/components/mission-text"
 import { RsvpForm } from "@/components/rsvp-form"
 
@@ -9,14 +7,10 @@ export default function BatmanInvitation() {
   return (
     <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
       <BatLoader />
-      <ParticlesBackground />
 
       <section className="hero-cinematic relative min-h-screen flex flex-col items-center justify-center px-4 overflow-hidden">
         {/* Gradient background overlay */}
         <div className="absolute inset-0 hero-gradient" />
-
-        {/* Urban city lights background */}
-        <div className="absolute inset-0 city-lights opacity-20" />
 
         {/* Main Hero Title */}
         <h1 className="hero-epic-title text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-center mb-12 tracking-wider relative z-20 px-4">
@@ -77,7 +71,7 @@ export default function BatmanInvitation() {
           <div className="flex justify-center mb-8">
             <div className="relative animate-float">
               <Image
-                src="/lego-batman-main.png"
+                src="/lego-batman-main.webp"
                 alt="LEGO Batman"
                 width={300}
                 height={400}
@@ -95,8 +89,6 @@ export default function BatmanInvitation() {
         </div>
       </section>
 
-      {/* Gotham Skyline */}
-      <GothamSkyline />
     </div>
   )
 }
