@@ -42,11 +42,7 @@ export default function BatmanInvitation() {
           FELIPE GIOVANARDI
         </p>
 
-        <div className="scroll-indicator z-20">
-          <div className="mouse">
-            <div className="wheel" />
-          </div>
-        </div>
+
       </section>
 
       {/* Mission Info Section */}
