@@ -223,7 +223,7 @@ export default function BatmanInvitation() {
                 <span className="relative z-10 text-sm md:text-base">
                   {isSubmitting
                     ? "PROCESANDO..."
-                    : "🃏 NO VOY, Y QUIERO QUE VUELVA CRISTINA FERNÁNDEZ DE KIRCHNER AL PODER"}
+                    : "🃏 NO VOY, Y QUIERO QUE VUELVA CRISTINA FERNÁNDEZ DE KIRCHNER AL PODER "}
                 </span>
               </Button>
             </div>
