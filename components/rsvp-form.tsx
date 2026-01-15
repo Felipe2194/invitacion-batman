@@ -11,6 +11,8 @@ export function RsvpForm() {
     const [showModal, setShowModal] = useState(false)
     const [modalContent, setModalContent] = useState({ title: "", message: "", type: "" })
 
+    const [supabase] = useState(() => createClient())
+
     const handleRSVP = async (attending: boolean) => {
         if (!name.trim()) {
             alert("⚠️ Por favor, identifícate primero")
@@ -18,7 +20,7 @@ export function RsvpForm() {
         }
 
         setIsSubmitting(true)
-        const supabase = createClient()
+        // const supabase = createClient() // Removed local instantiation
 
         try {
             const { error } = await supabase.from("rsvp_responses").insert({
