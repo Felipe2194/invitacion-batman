@@ -1,122 +1,15 @@
-"use client"
-
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import Image from "next/image"
-import { createClient } from "@/lib/client"
+import { BatLoader } from "@/components/bat-loader"
+import { ParticlesBackground } from "@/components/particles-background"
+import { GothamSkyline } from "@/components/gotham-skyline"
+import { MissionText } from "@/components/mission-text"
+import { RsvpForm } from "@/components/rsvp-form"
 
 export default function BatmanInvitation() {
-  const [isLoading, setIsLoading] = useState(true)
-  const [showModal, setShowModal] = useState(false)
-  const [modalContent, setModalContent] = useState({ title: "", message: "", type: "" })
-  const [name, setName] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [typedText, setTypedText] = useState("")
-  const fullText =
-    "MISIÓN: OPERACIÓN CUMPLEAÑOS\nFECHA: 24 DE ENERO - DESDE EL MEDIODÍA\nCOORDENADAS: CALLE VICTORIA ROMERO PEÑALOZA, NRO 1120\nBARRIO: CASA LINDA"
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 2000)
-    return () => clearTimeout(timer)
-  }, [])
-
-  // Typewriter effect
-  useEffect(() => {
-    if (!isLoading) {
-      let i = 0
-      const typingInterval = setInterval(() => {
-        if (i < fullText.length) {
-          setTypedText(fullText.substring(0, i + 1))
-          i++
-        } else {
-          clearInterval(typingInterval)
-        }
-      }, 50)
-      return () => clearInterval(typingInterval)
-    }
-  }, [isLoading])
-
-  const handleRSVP = async (attending: boolean) => {
-    if (!name.trim()) {
-      alert("⚠️ Por favor, identifícate primero")
-      return
-    }
-
-    setIsSubmitting(true)
-    const supabase = createClient()
-
-    try {
-      const { error } = await supabase.from("rsvp_responses").insert({
-        name: name.trim(),
-        response: attending ? "attending" : "not_attending",
-      })
-
-      if (error) {
-        console.error("Error saving RSVP:", error)
-        alert("❌ Hubo un error al guardar tu respuesta. Intenta de nuevo.")
-        return
-      }
-
-      if (attending) {
-        setModalContent({
-          title: "🦇 CONFIRMADO",
-          message: `${name}, tu traje está listo.\nNos vemos en la Baticueva.`,
-          type: "batman",
-        })
-      } else {
-        setModalContent({
-          title: "🃏 JAJAJAJA",
-          message: `${name}, tú te lo pierdes...\n¿Acaso tienes miedo?`,
-          type: "joker",
-        })
-      }
-      setShowModal(true)
-      setName("") // Clear name after submission
-    } catch (err) {
-      console.error("Unexpected error:", err)
-      alert("❌ Hubo un error inesperado. Intenta de nuevo.")
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  if (isLoading) {
-    return (
-      <div className="preloader">
-        <div className="bat-logo">
-          <svg viewBox="0 0 100 100" className="w-32 h-32">
-            <path
-              d="M50 10 L20 30 L25 50 L10 60 L30 70 L35 85 L50 75 L65 85 L70 70 L90 60 L75 50 L80 30 Z"
-              fill="currentColor"
-            />
-          </svg>
-        </div>
-        <div className="loading-text">GOTHAM CITY</div>
-      </div>
-    )
-  }
-
   return (
     <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
-      <div className="particles">
-        {[...Array(80)].map((_, i) => (
-          <div
-            key={i}
-            className="particle-bokeh"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${8 + Math.random() * 12}s`,
-              width: `${10 + Math.random() * 40}px`,
-              height: `${10 + Math.random() * 40}px`,
-            }}
-          />
-        ))}
-      </div>
+      <BatLoader />
+      <ParticlesBackground />
 
       <section className="hero-cinematic relative min-h-screen flex flex-col items-center justify-center px-4 overflow-hidden">
         {/* Gradient background overlay */}
@@ -172,10 +65,7 @@ export default function BatmanInvitation() {
               <span className="terminal-dot bg-green-500" />
             </div>
             <div className="terminal-body">
-              <pre className="font-mono text-sm md:text-lg whitespace-pre-wrap">
-                {typedText}
-                <span className="cursor-blink">_</span>
-              </pre>
+              <MissionText />
             </div>
           </div>
         </div>
@@ -201,69 +91,12 @@ export default function BatmanInvitation() {
             O SERÁS BLOQUEADO PARA SIEMPRE
           </p>
 
-          <div className="space-y-8">
-            <div className="command-input-container">
-              <span className="command-prompt">{">"}</span>
-              <Input
-                type="text"
-                placeholder="Identifícate, ciudadano..."
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="command-input"
-                disabled={isSubmitting}
-              />
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              <Button onClick={() => handleRSVP(true)} className="batman-button group" disabled={isSubmitting}>
-                <span className="relative z-10">{isSubmitting ? "PROCESANDO..." : "🦇 ASISTIRÉ"}</span>
-              </Button>
-
-              <Button onClick={() => handleRSVP(false)} className="joker-button group" disabled={isSubmitting}>
-                <span className="relative z-10 text-sm md:text-base">
-                  {isSubmitting
-                    ? "PROCESANDO..."
-                    : "🃏 NO VOY, Y QUIERO QUE VUELVA CRISTINA FERNÁNDEZ DE KIRCHNER AL PODER "}
-                </span>
-              </Button>
-            </div>
-          </div>
+          <RsvpForm />
         </div>
       </section>
 
-      {/* Modal */}
-      {showModal && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div
-            className={`modal-content ${modalContent.type === "joker" ? "joker-modal" : "batman-modal"}`}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3 className="text-3xl md:text-5xl font-black mb-6">{modalContent.title}</h3>
-            <p className="text-lg md:text-xl font-mono whitespace-pre-line mb-8">{modalContent.message}</p>
-            <Button
-              onClick={() => setShowModal(false)}
-              className={modalContent.type === "joker" ? "joker-button" : "batman-button"}
-            >
-              CERRAR
-            </Button>
-          </div>
-        </div>
-      )}
-
       {/* Gotham Skyline */}
-      <div className="gotham-skyline">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="building"
-            style={{
-              left: `${i * 5}%`,
-              height: `${50 + Math.random() * 150}px`,
-              animationDelay: `${Math.random() * 2}s`,
-            }}
-          />
-        ))}
-      </div>
+      <GothamSkyline />
     </div>
   )
 }
