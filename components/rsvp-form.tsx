@@ -3,15 +3,13 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { createClient } from "@/lib/client"
+import { submitRSVP } from "@/app/actions"
 
 export function RsvpForm() {
     const [name, setName] = useState("")
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [modalContent, setModalContent] = useState({ title: "", message: "", type: "" })
-
-    const [supabase] = useState(() => createClient())
 
     const handleRSVP = async (attending: boolean) => {
         if (!name.trim()) {
@@ -20,17 +18,12 @@ export function RsvpForm() {
         }
 
         setIsSubmitting(true)
-        // const supabase = createClient() // Removed local instantiation
 
         try {
-            const { error } = await supabase.from("rsvp_responses").insert({
-                name: name.trim(),
-                response: attending ? "attending" : "not_attending",
-            })
+            const result = await submitRSVP(name, attending)
 
-            if (error) {
-                console.error("Error saving RSVP:", error)
-                alert("❌ Hubo un error al guardar tu respuesta. Intenta de nuevo.")
+            if (!result.success) {
+                alert(`❌ ${result.message}`)
                 return
             }
 
@@ -51,7 +44,7 @@ export function RsvpForm() {
             setName("")
         } catch (err) {
             console.error("Unexpected error:", err)
-            alert("❌ Hubo un error inesperado. Intenta de nuevo.")
+            alert("❌ Hubo un error inesperado al conectar con el servidor.")
         } finally {
             setIsSubmitting(false)
         }
